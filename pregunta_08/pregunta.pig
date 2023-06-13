@@ -16,4 +16,14 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
+data = LOAD 'data.tsv' AS (col1: chararray, col2: bag{}, col3: map[]);
 
+table0 = FOREACH data GENERATE FLATTEN(col2) AS letra, FLATTEN(col3) AS clave;
+table= FOREACH table0 GENERATE $0 AS letter, $1 AS key;
+
+grouped_table = GROUP table BY (letter, key);
+result = FOREACH grouped_table GENERATE $0 as letter, SIZE($1) AS value;
+
+STORE result INTO 'output' USING PigStorage(',');
+
+DUMP result;

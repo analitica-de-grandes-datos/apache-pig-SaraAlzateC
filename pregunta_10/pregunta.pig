@@ -21,3 +21,14 @@ $ pig -x local -f pregunta.pig
         >>> Escriba su respuesta a partir de este punto <<<
 */
 
+data = LOAD 'data.csv' USING PigStorage(',') AS (col1: chararray, col2: chararray, col3: chararray);
+
+relation = FOREACH data GENERATE col3 AS apellido, SIZE(col3) AS longitud;
+
+sorted_relation = ORDER relation BY longitud DESC, apellido;
+
+limited_relation = LIMIT sorted_relation 5;
+
+STORE limited_relation INTO 'output' USING PigStorage(',');
+
+DUMP limited_relation;
