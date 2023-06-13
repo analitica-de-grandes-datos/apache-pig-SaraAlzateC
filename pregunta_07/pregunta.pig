@@ -14,3 +14,11 @@ $ pig -x local -f pregunta.pig
 
         >>> Escriba su respuesta a partir de este punto <<<
 */
+data = LOAD 'data.tsv' AS (col1: chararray, col2: bag{}, col3: map[]);
+
+table = FOREACH data GENERATE col1, SIZE(col2) AS col2_count, SIZE(col3) AS col3_count;
+
+sorted_table = ORDER table BY col1, col2_count, col3_count;
+
+STORE sorted_table INTO 'output' USING PigStorage(',');
+DUMP sorted_table;

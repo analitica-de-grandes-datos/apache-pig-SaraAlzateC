@@ -33,3 +33,12 @@ $ pig -x local -f pregunta.pig
         >>> Escriba su respuesta a partir de este punto <<<
 */
 
+data = LOAD 'data.csv' USING PigStorage(',') AS (col1: chararray, col2: chararray, col3: chararray);
+
+relation = FOREACH data GENERATE col3 AS apellido, UPPER(col3) AS apellido_mayusculas, LOWER(col3) AS apellido_minusculas;
+
+sorted_relation = ORDER relation BY apellido;
+
+STORE sorted_relation INTO 'output' USING PigStorage(',');
+
+DUMP sorted_relation;
